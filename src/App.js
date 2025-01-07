@@ -12,6 +12,7 @@ import { Link as ReactRouterLink } from 'react-router-dom'
 import { Link as ChakraLink, Text } from '@chakra-ui/react'
 import BurgerHeader from './components/BurgerHeader';
 import { MakeCourse } from './pages/MakeCourse';
+import { saveAs } from "file-saver"; // To export course data
 
 function App() {
   const [courses, setCourses] = useState([]);
@@ -74,6 +75,45 @@ function App() {
     setCourses(prevItems => [...prevItems, newCourse]);
     showToast("Course created", newCourse.name + " added to planned courses", "success");
   }
+
+  const exportToFile = (data, fileName = "coursesData.json") => {
+    // Get the current date
+    const currentDate = new Date();
+
+    // Format the date as YYYY-MM-DD
+    const formattedDate = currentDate.toISOString().split("T")[0];
+
+    // Append the date to the filename (useful if you have multiple saves)
+    const fileNameWithDate = `coursesData_${formattedDate}.json`;
+
+    const fileToSave = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+
+    saveAs(fileToSave, fileNameWithDate);
+  };
+
+  const importFromFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const importedData = JSON.parse(event.target.result);
+      // Assuming coursesData structure is valid
+      setCourses(importedData);
+      showToast(
+        "Data Imported",
+        "Your courses data has been successfully imported.",
+        "success",
+      );
+    };
+    reader.onerror = () => {
+      showToast(
+        "Import Failed",
+        "There was an error importing the data.",
+        "error",
+      );
+    };
+    reader.readAsText(file);
+  };
 
 
   const showToast = (title,description, status) => {
@@ -258,7 +298,7 @@ function App() {
 
         <Route path="/dit-planner/make" element={<MakeCourse onMakeCourse={makeCourse}/>} />
 
-        <Route path="/dit-planner/settings" element={<Settings onResetData={resetData} onSyncData={syncSavedWithCourseData} version={coursesDataVersion} />} />
+        <Route path="/dit-planner/settings" element={<Settings onResetData={resetData} onSyncData={syncSavedWithCourseData} onExportData={() => exportToFile(courses)} onImportData={importFromFile} version={coursesDataVersion} />} />
       </Routes>
     </Flex>
 
