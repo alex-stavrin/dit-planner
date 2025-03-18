@@ -23,7 +23,7 @@ export default function PlannedCourses({
 
 
     return <Flex flexDirection={"column"} overflow={"auto"} gap={5} mt={5} padding={3}>
-        <Card>
+        {plannedCoursesCount > 0 && <Card>
             <CardHeader>
                 <Heading fontSize={"1.25rem"}>
                     Stats
@@ -53,7 +53,7 @@ export default function PlannedCourses({
                     </StatHelpText>
                 </Stat>
             </CardBody>
-        </Card>
+        </Card>}
         <MyCoursesShower courses={sortedPlanned} onRemove={removeHasCourse} onChangeGrade={changeGrade}
         onUpdateActivity={updateActivity}
         stateFunction={plannedCourseState} showActivity={true} showGrade={false}

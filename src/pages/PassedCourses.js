@@ -23,7 +23,7 @@ export default function PassedCourses(
 
 
     return <Flex flexDirection={"column"} overflow={"auto"} gap={5} mt={5} padding={3}>
-        <Card>
+        {passedCourses.length > 0 && <Card>
             <CardHeader>
                 <Heading fontSize={"1.25rem"}>
                     Stats
@@ -53,7 +53,7 @@ export default function PassedCourses(
                     </StatHelpText>
                 </Stat>
             </CardBody>
-        </Card>
+        </Card>}
         <MyCoursesShower courses={sortedPassed} onRemove={removeHasCourse} onChangeGrade={changeGrade} onUpdateActivity={updateActivity}
                     stateFunction={passedCourseState} showActivity={false} showGrade={true} emptyComponent={noPassedComponent}/>
     </Flex>
