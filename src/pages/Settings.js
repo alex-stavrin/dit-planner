@@ -78,7 +78,7 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
                             <Button colorScheme='red' onClick={resetButtonClicked}>Reset Data</Button>
                         </Box>
                         <Box>
-                            Made by <Link href='https://github.com/Alekossta' color={"blue.500"} isExternal>Alekossta</Link>
+                            Made by <Link href='https://www.alexstavrin.com/' color={"blue.500"} isExternal>Alex Stavrin</Link>
                         </Box>
                         <Box>
                             <Text fontSize="xl" fontWeight="bold">
@@ -86,10 +86,15 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
                             </Text>
                             <UnorderedList>
                                 <ListItem>
+                                    <Link href='https://github.com/matinanadali' isExternal color={"blue.500"}>
+                                        matinanadali
+                                    </Link>
+                                </ListItem>
+                                <ListItem>
                                     DanielPikilidis
                                 </ListItem>
                                 <ListItem>
-                                    matinanadali
+                                    vaghred
                                 </ListItem>
                             </UnorderedList>
                             <Text mt={5}>

@@ -14,8 +14,6 @@ import { Card, CardHeader, CardBody } from '@chakra-ui/react'
 import { Thead, Tr, Table, Td, Tbody} from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
 
 export function Home({courses})
 {
@@ -366,30 +364,21 @@ export function Home({courses})
     return (
     <Flex align="center" justifyContent="center" flexDirection={"column"}>
         <CircularProgress value={ectsPassedSum} color='blue.400'  size='250px' thickness='5px' min={0} max={240} mt={3}>
-            <CircularProgressLabel>{ectsPassedSum+" "}ects</CircularProgressLabel>
+            <CircularProgressLabel fontSize={"0.2em"}>{ectsPassedSum+" "}ects</CircularProgressLabel>
         </CircularProgress>
         <Flex flexDirection={"column"} w={["100%", "75%", "50%"]} mb={4}>
-            <Button as={RouterLink} to="/dit-planner/current" h={65} colorScheme="blue" borderRadius={0} mb={1}>
-                Current Courses {currentCount}
-            </Button>
-            <Button as={RouterLink} to="/dit-planner/passed" h={65} colorScheme="blue" borderRadius={0} mb={1}>
-                Passed Courses {passedCount}
-            </Button>
-            <Button as={RouterLink} to="/dit-planner/planned" h={65} colorScheme="blue" borderRadius={0} mb={1}>
-                Planned Courses {plannedCount}
-            </Button>
             <Button as={RouterLink} to="/dit-planner/all" h={65}colorScheme="blue" borderRadius={0} mb={1}>
-                All Courses
+                Add Courses
             </Button>
         </Flex>
         <Card w={["100%", "75%", "50%"]} mb={4}>
             <CardHeader>
-                <Heading sizes='lg'>Your Stats</Heading>
+                <Heading sizes='xl'>Your Stats</Heading>
             </CardHeader>
             <CardBody>
                 <Stack divider={<StackDivider />} spacing='4'>
                 <Box>
-                    <Heading size='md' mb={5}>Passed Overview</Heading>
+                    <Heading size='lg' mb={5}>Passed Overview</Heading>
                     <Stat>
                         <StatLabel>Average</StatLabel>
                         <StatNumber>{currentGrade.toFixed(2)}</StatNumber>
@@ -487,18 +476,18 @@ export function Home({courses})
                     </Table>
                 </Box>
                 <Box>
-                    <Heading size='md' mb={5}>Planned Overview</Heading>
+                    <Heading size='lg' mb={5}>Planned Overview</Heading>
                     <Stat>
-                        <StatLabel>Planned ECTS</StatLabel>
-                        <StatNumber>{ectsPlannedSum}/240</StatNumber>
+                        <StatLabel color={ectsPlannedSum >= 240 ? "green.300" : "white"}>Planned ECTS</StatLabel>
+                        <StatNumber color={ectsPlannedSum >= 240 ? "green.300" : "white"}>{ectsPlannedSum}/240</StatNumber>
                     </Stat>
                     <Stat>
-                        <StatLabel>Planned Γενικης Παιδειας</StatLabel>
-                        <StatNumber>{gpPlanned}/3</StatNumber>
+                        <StatLabel color={gpPlanned == 3 ? "green.300" : "white"}>Planned Γενικης Παιδειας</StatLabel>
+                        <StatNumber color={gpPlanned == 3 ? "green.300" : "white"}>{gpPlanned}/3</StatNumber>
                     </Stat>
                     <Stat>
-                        <StatLabel>Planned Υποχρεωτικά</StatLabel>
-                        <StatNumber>{ypPlanned}/18</StatNumber>
+                        <StatLabel color={ypPlanned == 18 ? "green.300" : "white"}>Planned Υποχρεωτικά</StatLabel>
+                        <StatNumber color={ypPlanned == 18 ? "green.300" : "white"}>{ypPlanned}/18</StatNumber>
                     </Stat>
                     <Table>
                         <Thead>

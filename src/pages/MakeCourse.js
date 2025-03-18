@@ -11,7 +11,9 @@ import {
   FormErrorMessage,
   Box,
   Flex,
-  Card
+  Card,
+  Text,
+  Heading
 } from "@chakra-ui/react";
 
 const CourseSchema = Yup.object().shape({
@@ -29,7 +31,8 @@ export const MakeCourse = ({onMakeCourse}) => {
   }
 
   return (
-    <Flex align="center" flexDirection={"column"} w="100%" h="100%" mt={5}>
+    <Flex align="center" gap={5} flexDirection={"column"} w="100%" h="100%" mt={5}>
+      <Heading>Make a Course</Heading>
       <Card w={['100%', '75%', '35%']} p={3}>
         <Formik
           initialValues={{

@@ -13,6 +13,7 @@ import { Link as ChakraLink, Text } from '@chakra-ui/react'
 import BurgerHeader from './components/BurgerHeader';
 import { MakeCourse } from './pages/MakeCourse';
 import { saveAs } from "file-saver"; // To export course data
+import CurrentCourses from './pages/CurrentCourses';
 
 function App() {
   const [courses, setCourses] = useState([]);
@@ -283,8 +284,8 @@ function App() {
         <Route path="/dit-planner" element={<Home courses={courses}/>} />
 
         <Route path="/dit-planner/current" element=
-        {<MyCoursesShower courses={courses} onRemove={removeHasCourse} onChangeGrade={changeGrade} onUpdateActivity={updateActivity}
-          stateFunction={currentCourseState} showActivity={true} showGrade={false} emptyComponent={noCurrentComponent}/>}/>
+        {<CurrentCourses courses={courses} removeHasCourse={removeHasCourse} changeGrade={changeGrade} updateActivity={updateActivity}
+        currentCourseState={currentCourseState} showActivity={true} showGrade={false} noCurrentComponent={noCurrentComponent}/>}/>
 
         <Route path="/dit-planner/passed" element=
         {<MyCoursesShower courses={courses} onRemove={removeHasCourse} onChangeGrade={changeGrade} onUpdateActivity={updateActivity}
