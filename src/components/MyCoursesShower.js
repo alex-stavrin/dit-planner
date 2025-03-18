@@ -1,5 +1,5 @@
 import { Thead, Tr, Table, Td, Tbody, Box} from "@chakra-ui/react";
-import { MyCourse } from "../components/MyCourse";
+import { MyCourse } from "./MyCourse";
 
 export function MyCoursesShower({courses, onRemove, onChangeGrade, onUpdateActivity, stateFunction, showActivity, emptyComponent : EmptyComponent, showGrade})
 {
@@ -23,7 +23,7 @@ export function MyCoursesShower({courses, onRemove, onChangeGrade, onUpdateActiv
                                 return (
                                     <MyCourse 
                                         course={course} 
-                                        key={index} 
+                                        key={course.code} 
                                         onRemove={onRemove} 
                                         onChangeGrade={onChangeGrade} 
                                         onUpdateActivity={onUpdateActivity} 

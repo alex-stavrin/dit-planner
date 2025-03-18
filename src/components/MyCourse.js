@@ -55,6 +55,17 @@ export function MyCourse({course, onRemove, onChangeGrade, showActivity, onUpdat
         onRemove(course);
     }
 
+    let gradeColor = "yellow.300";
+    if(grade > 7)
+    {
+        gradeColor = "green.300";
+    }
+
+    if(grade == 10.0)
+    {
+        gradeColor = "pink.300";
+    }
+
     return (<>
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
@@ -96,7 +107,7 @@ export function MyCourse({course, onRemove, onChangeGrade, showActivity, onUpdat
             </ModalContent>
         </Modal>
 
-        <Tr key={course.code} _hover={{ bg: "blue.300", cursor: "pointer" } } onClick={onOpen}>
+        <Tr key={course.code} _hover={{ bg: "blue.500", cursor: "pointer" } } onClick={onOpen}>
             <Td fontSize={['xs', 'xs', 'lg']}  px={0.25}>
                 <Icon as={ChevronRightIcon} />
                 {course.name}
@@ -114,7 +125,7 @@ export function MyCourse({course, onRemove, onChangeGrade, showActivity, onUpdat
                 <Text>{course.semester}</Text>
             </Td>
             {showGrade && <Td fontSize={['xs', 'xs', 'lg']}  px={0.25}>
-                <Text>{course.grade}</Text>
+                <Text color={gradeColor}>{course.grade}</Text>
             </Td>}
         </Tr>
     </>)

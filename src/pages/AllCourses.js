@@ -19,7 +19,7 @@ export function AllCourses({courses, onAdd})
     const isFilteredCourse = (course) => {
        if (selectedSemesters.map(semester => semester.value).indexOf(course.semester) === -1) return false;
        if (selectedCategories.map(category => category.value).indexOf(course.category) === -1) return false;
-       if (course.name != undefined && !removeTonos(course.name.toLowerCase()).includes(removeTonos(searchQuery).toLowerCase())) return false;
+       if (course.name !== undefined && !removeTonos(course.name.toLowerCase()).includes(removeTonos(searchQuery).toLowerCase())) return false;
     
        return true;
     }

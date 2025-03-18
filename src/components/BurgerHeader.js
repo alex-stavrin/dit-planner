@@ -30,7 +30,7 @@ import { Link as ChakraLink } from '@chakra-ui/react'
     });
   
     return (
-      <Box bg="blue.500" color="white" py={1} px={3}>
+      <Box bg="blue.500" color="white" py={1} px={3} position={"sticky"} zIndex={"1000"} top={0}>
         <Flex h={16} alignItems="center" justifyContent="space-between">
           <Box fontWeight="bold" color="white" display={{ md: 'none' }}>Dit Planner</Box>
           <IconButton

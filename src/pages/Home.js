@@ -362,7 +362,7 @@ export function Home({courses})
         }
     }
     return (
-    <Flex align="center" justifyContent="center" flexDirection={"column"}>
+    <Flex align="center" justifyContent="center" flexDirection={"column"} overflow={"auto"}>
         <CircularProgress value={ectsPassedSum} color='blue.400'  size='250px' thickness='5px' min={0} max={240} mt={3}>
             <CircularProgressLabel fontSize={"0.2em"}>{ectsPassedSum+" "}ects</CircularProgressLabel>
         </CircularProgress>
@@ -383,11 +383,11 @@ export function Home({courses})
                         <StatLabel>Average</StatLabel>
                         <StatNumber>{currentGrade.toFixed(2)}</StatNumber>
                     </Stat>
-                    <Stat>
+                    <Stat color={gpPassed >= 3 ? "green.300" : "white"}>
                         <StatLabel>Passed Γενικης Παιδειας</StatLabel>
                         <StatNumber>{gpPassed}/3</StatNumber>
                     </Stat>
-                    <Stat>
+                    <Stat color={ypPassed >= 18 ? "green.300" : "white"}>
                         <StatLabel>Passed Υποχρεωτικά</StatLabel>
                         <StatNumber>{ypPassed}/18</StatNumber>
                     </Stat>
@@ -482,12 +482,12 @@ export function Home({courses})
                         <StatNumber color={ectsPlannedSum >= 240 ? "green.300" : "white"}>{ectsPlannedSum}/240</StatNumber>
                     </Stat>
                     <Stat>
-                        <StatLabel color={gpPlanned == 3 ? "green.300" : "white"}>Planned Γενικης Παιδειας</StatLabel>
-                        <StatNumber color={gpPlanned == 3 ? "green.300" : "white"}>{gpPlanned}/3</StatNumber>
+                        <StatLabel color={gpPlanned === 3 ? "green.300" : "white"}>Planned Γενικης Παιδειας</StatLabel>
+                        <StatNumber color={gpPlanned === 3 ? "green.300" : "white"}>{gpPlanned}/3</StatNumber>
                     </Stat>
                     <Stat>
-                        <StatLabel color={ypPlanned == 18 ? "green.300" : "white"}>Planned Υποχρεωτικά</StatLabel>
-                        <StatNumber color={ypPlanned == 18 ? "green.300" : "white"}>{ypPlanned}/18</StatNumber>
+                        <StatLabel color={ypPlanned === 18 ? "green.300" : "white"}>Planned Υποχρεωτικά</StatLabel>
+                        <StatNumber color={ypPlanned === 18 ? "green.300" : "white"}>{ypPlanned}/18</StatNumber>
                     </Stat>
                     <Table>
                         <Thead>

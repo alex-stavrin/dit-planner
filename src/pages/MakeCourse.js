@@ -9,10 +9,8 @@ import {
   NumberInputField,
   Button,
   FormErrorMessage,
-  Box,
   Flex,
   Card,
-  Text,
   Heading
 } from "@chakra-ui/react";
 

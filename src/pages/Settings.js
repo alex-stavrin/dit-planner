@@ -12,12 +12,9 @@ import {
     Input,
 } from '@chakra-ui/react'
 import { Card, CardHeader, CardBody } from '@chakra-ui/react'
-import { CheckCircleIcon } from '@chakra-ui/icons';
-import { useColorMode } from '@chakra-ui/react';
 
 
 export function Settings({ onResetData, onSyncData, onImportData, onExportData, version }) {
-    const { colorMode, toggleColorMode } = useColorMode();
 
     const resetButtonClicked = () => {
         onResetData();
@@ -37,9 +34,6 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
       const exportButtonClicked = () => {
         onExportData();
       };
-    
-
-    const isDarkMode = colorMode !== "light";
 
     return (<Flex align="center" flexDirection={"column"} w="100%" h="100%" mt={5}>
         <Box w={['100%', '75%', '35%']}>
@@ -49,9 +43,6 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
                 </CardHeader>
                 <CardBody>
                     <Stack divider={<StackDivider />} spacing='4'>
-                        <Box>
-                            <Button colorScheme={"gray"} onClick={toggleColorMode}>Switch to {isDarkMode ? "Light" : "Dark"} Mode</Button>
-                        </Box>
                         <Box>
                             <Button colorScheme='yellow' onClick={syncButtonClicked}>Sync Data</Button>
                         </Box>

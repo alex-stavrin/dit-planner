@@ -1,9 +1,8 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import { Box, Flex, useToast } from '@chakra-ui/react';
+import { Flex, useToast } from '@chakra-ui/react';
 import {Home} from "./pages/Home"
 import { Settings } from './pages/Settings';
-import { MyCoursesShower } from './pages/MyCoursesShower';
 import { coursesData } from "./coursesData";
 import { coursesDataVersion } from './coursesDataVersion';
 import { useState,useEffect  } from "react";
@@ -14,13 +13,21 @@ import BurgerHeader from './components/BurgerHeader';
 import { MakeCourse } from './pages/MakeCourse';
 import { saveAs } from "file-saver"; // To export course data
 import CurrentCourses from './pages/CurrentCourses';
+import { Box } from '@chakra-ui/react';
+import PassedCourses from './pages/PassedCourses';
+import PlannedCourses from './pages/PlannedCourses';
+import {  useColorMode } from "@chakra-ui/react";
 
 function App() {
   const [courses, setCourses] = useState([]);
   const toast = useToast();
   const [isFirstLoad, setFirstLoad] = useState(true);
+  const { setColorMode } = useColorMode();
+
 
   useEffect(() => {
+      // force dark mode
+      setColorMode("dark");
       if(isFirstLoad)
       {
           const savedCourses = localStorage.getItem("courses");
@@ -279,28 +286,30 @@ function App() {
 
   return (
     <Flex w="100%" h="100%" flexDirection={"column"}>
-      <BurgerHeader/>     
-      <Routes>
-        <Route path="/dit-planner" element={<Home courses={courses}/>} />
+      <BurgerHeader/>
+      <Box overflow={"auto"}>
+        <Routes>
+          <Route path="/dit-planner" element={<Home courses={courses}/>} />
 
-        <Route path="/dit-planner/current" element=
-        {<CurrentCourses courses={courses} removeHasCourse={removeHasCourse} changeGrade={changeGrade} updateActivity={updateActivity}
-        currentCourseState={currentCourseState} showActivity={true} showGrade={false} noCurrentComponent={noCurrentComponent}/>}/>
+          <Route path="/dit-planner/current" element=
+          {<CurrentCourses courses={courses} removeHasCourse={removeHasCourse} changeGrade={changeGrade} updateActivity={updateActivity}
+          currentCourseState={currentCourseState} showActivity={true} showGrade={false} noCurrentComponent={noCurrentComponent}/>}/>
 
-        <Route path="/dit-planner/passed" element=
-        {<MyCoursesShower courses={courses} onRemove={removeHasCourse} onChangeGrade={changeGrade} onUpdateActivity={updateActivity}
-          stateFunction={passedCourseState} showActivity={false} showGrade={true} emptyComponent={noPassedComponent}/>}/>
+          <Route path="/dit-planner/passed" element=
+          {<PassedCourses courses={courses} removeHasCourse={removeHasCourse} changeGrade={changeGrade} updateActivity={updateActivity}
+            passedCourseState={passedCourseState} noPassedComponent={noPassedComponent}/>}/>
 
-        <Route path="/dit-planner/planned" element=
-        {<MyCoursesShower courses={courses} onRemove={removeHasCourse} onChangeGrade={changeGrade} onUpdateActivity={updateActivity}
-          stateFunction={plannedCourseState} showActivity={true} showGrade={false} emptyComponent={noPlannedComponent}/>}/>
+          <Route path="/dit-planner/planned" element=
+          {<PlannedCourses courses={courses} removeHasCourse={removeHasCourse} changeGrade={changeGrade} updateActivity={updateActivity}
+            plannedCourseState={plannedCourseState} showActivity={true} showGrade={false} noPlannedComponent={noPlannedComponent}/>}/>
 
-        <Route path='/dit-planner/all' element={<AllCourses courses={courses} onAdd={addHasCourse}/>}></Route>
+          <Route path='/dit-planner/all' element={<AllCourses courses={courses} onAdd={addHasCourse}/>}></Route>
 
-        <Route path="/dit-planner/make" element={<MakeCourse onMakeCourse={makeCourse}/>} />
+          <Route path="/dit-planner/make" element={<MakeCourse onMakeCourse={makeCourse}/>} />
 
-        <Route path="/dit-planner/settings" element={<Settings onResetData={resetData} onSyncData={syncSavedWithCourseData} onExportData={() => exportToFile(courses)} onImportData={importFromFile} version={coursesDataVersion} />} />
-      </Routes>
+          <Route path="/dit-planner/settings" element={<Settings onResetData={resetData} onSyncData={syncSavedWithCourseData} onExportData={() => exportToFile(courses)} onImportData={importFromFile} version={coursesDataVersion} />} />
+        </Routes>
+        </Box>     
     </Flex>
 
 
