@@ -1,0 +1,52 @@
+name: Format and Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  format-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          # Full git history needed to properly deploy to gh-pages
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Format code with Prettier
+        run: npm run format
+      
+      # - name: Commit formatted code
+      #   # Only commit if there are changes
+      #   run: |
+      #     git config --local user.email "action@github.com"
+      #     git config --local user.name "GitHub Action"
+      #     git diff --quiet || (git add . && git commit -m "Format code with Prettier" && git push)
+      #   continue-on-error: true
+      
+      # - name: Build project
+      #   run: npm run build
+      #   env:
+      #     PUBLIC_URL: /dit-planner
+      
+      # - name: Deploy to GitHub Pages
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     folder: build
+      #     branch: gh-pages
+      #     clean: true

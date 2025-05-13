@@ -1,6 +1,6 @@
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 export function Settings({ onResetData, onSyncData, onImportData, onExportData, version }) {
   const resetButtonClicked = () => {
@@ -23,7 +23,7 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
   };
 
   return (
-    <div className="flex items-center flex-col w-full h-full mt-5">
+    <div className="mt-5 flex h-full w-full flex-col items-center">
       <div className="w-full sm:w-3/4 md:w-1/3">
         <Card className="w-full">
           <CardHeader>
@@ -32,16 +32,16 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
           <CardContent>
             <div className="space-y-4 divide-y">
               <div className="pb-4">
-                <Button 
-                  variant="outline" 
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white"
+                <Button
+                  variant="outline"
+                  className="bg-yellow-500 text-white hover:bg-yellow-600"
                   onClick={syncButtonClicked}
                 >
                   Sync Data
                 </Button>
               </div>
-              
-              <div className="pt-4 pb-4">
+
+              <div className="pb-4 pt-4">
                 <Input
                   type="file"
                   accept=".json"
@@ -52,72 +52,69 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
                 <div className="flex space-x-2">
                   <Button
                     variant="outline"
-                    className="bg-blue-500 hover:bg-blue-600 text-white"
-                    onClick={() => document.getElementById("importInput").click()}
+                    className="bg-blue-500 text-white hover:bg-blue-600"
+                    onClick={() => document.getElementById('importInput').click()}
                   >
                     Import from file
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    className="bg-blue-500 hover:bg-blue-600 text-white"
+                  <Button
+                    variant="outline"
+                    className="bg-blue-500 text-white hover:bg-blue-600"
                     onClick={exportButtonClicked}
                   >
                     Export to file
                   </Button>
                 </div>
               </div>
-              
-              <div className="pt-4 pb-4">
-                <Button 
-                  variant="destructive"
-                  onClick={resetButtonClicked}
-                >
+
+              <div className="pb-4 pt-4">
+                <Button variant="destructive" onClick={resetButtonClicked}>
                   Reset Data
                 </Button>
               </div>
-              
-              <div className="pt-4 pb-4">
-                Made by <a href="https://www.alexstavrin.com/" 
+
+              <div className="pb-4 pt-4">
+                Made by{' '}
+                <a
+                  href="https://www.alexstavrin.com/"
                   className="text-blue-500 hover:text-blue-700 hover:underline"
-                  target="_blank" rel="noopener noreferrer"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Alex Stavrin
                 </a>
               </div>
-              
-              <div className="pt-4 pb-4">
+
+              <div className="pb-4 pt-4">
                 <h4 className="text-lg font-bold">Contributors</h4>
-                <ul className="list-disc pl-6 mt-2">
+                <ul className="mt-2 list-disc pl-6">
                   <li>
-                    <a 
-                      href="https://github.com/matinanadali" 
+                    <a
+                      href="https://github.com/matinanadali"
                       className="text-blue-500 hover:text-blue-700 hover:underline"
-                      target="_blank" rel="noopener noreferrer"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       matinanadali
                     </a>
                   </li>
-                  <li>
-                    DanielPikilidis
-                  </li>
-                  <li>
-                    vaghred
-                  </li>
+                  <li>DanielPikilidis</li>
+                  <li>vaghred</li>
                 </ul>
                 <p className="mt-5">
-                  Contribute in <a 
-                    href="https://github.com/Alekossta/dit-planner" 
+                  Contribute in{' '}
+                  <a
+                    href="https://github.com/Alekossta/dit-planner"
                     className="text-blue-500 hover:text-blue-700 hover:underline"
-                    target="_blank" rel="noopener noreferrer"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Github
                   </a>
                 </p>
               </div>
-              
-              <div className="pt-4">
-                Version: {version}
-              </div>
+
+              <div className="pt-4">Version: {version}</div>
             </div>
           </CardContent>
         </Card>

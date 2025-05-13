@@ -1,6 +1,6 @@
-import React from "react";
-import { MyCoursesShower } from "../components/MyCoursesShower";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { MyCoursesShower } from '@/components/MyCoursesShower';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import React from 'react';
 
 export default function CurrentCourses({
   courses,
@@ -8,21 +8,21 @@ export default function CurrentCourses({
   changeGrade,
   updateActivity,
   currentCourseState,
-  noCurrentComponent
+  noCurrentComponent,
 }) {
   // i know this isnt optimized. but i dont really care
-  const currentCourses = courses.filter(el => currentCourseState(el));
+  const currentCourses = courses.filter((el) => currentCourseState(el));
   const currentCoursesCount = currentCourses.length;
 
   let ectsSum = 0;
-  for(let i = 0; i < currentCoursesCount; i++) {
-    ectsSum += Number(currentCourses[i].ECTS); 
+  for (let i = 0; i < currentCoursesCount; i++) {
+    ectsSum += Number(currentCourses[i].ECTS);
   }
 
   const sortedCurrent = [...currentCourses].sort((a, b) => Number(a.semester) - Number(b.semester));
 
   return (
-    <div className="flex flex-col overflow-auto gap-5 mt-5 p-3">
+    <div className="mt-5 flex flex-col gap-5 overflow-auto p-3">
       {currentCoursesCount > 0 && (
         <div className="flex flex-col">
           <Card>
@@ -51,14 +51,14 @@ export default function CurrentCourses({
           </Card>
         </div>
       )}
-      <MyCoursesShower 
-        courses={sortedCurrent} 
-        onRemove={removeHasCourse} 
-        onChangeGrade={changeGrade} 
+      <MyCoursesShower
+        courses={sortedCurrent}
+        onRemove={removeHasCourse}
+        onChangeGrade={changeGrade}
         onUpdateActivity={updateActivity}
-        stateFunction={currentCourseState} 
-        showActivity={true} 
-        showGrade={false} 
+        stateFunction={currentCourseState}
+        showActivity={true}
+        showGrade={false}
         emptyComponent={noCurrentComponent}
       />
     </div>

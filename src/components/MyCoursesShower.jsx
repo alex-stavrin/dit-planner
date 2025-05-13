@@ -1,40 +1,40 @@
-import React from "react";
-import { MyCourse } from "./MyCourse";
+import { MyCourse } from './MyCourse';
+import React from 'react';
 
 export function MyCoursesShower({
-  courses, 
-  onRemove, 
-  onChangeGrade, 
-  onUpdateActivity, 
-  stateFunction, 
-  showActivity, 
-  emptyComponent: EmptyComponent, 
-  showGrade
+  courses,
+  onRemove,
+  onChangeGrade,
+  onUpdateActivity,
+  stateFunction,
+  showActivity,
+  emptyComponent: EmptyComponent,
+  showGrade,
 }) {
-  const filteredCourses = courses.filter(course => stateFunction(course));
-  
+  const filteredCourses = courses.filter((course) => stateFunction(course));
+
   return filteredCourses.length > 0 ? (
     <div className="w-full overflow-x-auto">
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b">
-            <th className="text-xs md:text-lg p-1 text-left font-medium">Course</th>
-            <th className="text-xs md:text-lg p-1 text-left font-medium">Code</th>
-            <th className="text-xs md:text-lg p-1 text-left font-medium">ECTS</th>
-            <th className="text-xs md:text-lg p-1 text-left font-medium">Category</th>
-            <th className="text-xs md:text-lg p-1 text-left font-medium">Semester</th>
-            {showGrade && <th className="text-xs md:text-lg p-1 text-left font-medium">Grade</th>}
+            <th className="p-1 text-left text-xs font-medium md:text-lg">Course</th>
+            <th className="p-1 text-left text-xs font-medium md:text-lg">Code</th>
+            <th className="p-1 text-left text-xs font-medium md:text-lg">ECTS</th>
+            <th className="p-1 text-left text-xs font-medium md:text-lg">Category</th>
+            <th className="p-1 text-left text-xs font-medium md:text-lg">Semester</th>
+            {showGrade && <th className="p-1 text-left text-xs font-medium md:text-lg">Grade</th>}
           </tr>
         </thead>
         <tbody>
           {filteredCourses.map((course) => (
-            <MyCourse 
-              course={course} 
-              key={course.code} 
-              onRemove={onRemove} 
-              onChangeGrade={onChangeGrade} 
-              onUpdateActivity={onUpdateActivity} 
-              showActivity={showActivity} 
+            <MyCourse
+              course={course}
+              key={course.code}
+              onRemove={onRemove}
+              onChangeGrade={onChangeGrade}
+              onUpdateActivity={onUpdateActivity}
+              showActivity={showActivity}
               showGrade={showGrade}
             />
           ))}

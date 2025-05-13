@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { NumberInput } from "@/components/ui/number-input";
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
+import { NumberInput } from '@/components/ui/number-input';
+import { ChevronRight } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export function MyCourse({
   course,
@@ -17,7 +17,7 @@ export function MyCourse({
   onChangeGrade,
   showActivity,
   onUpdateActivity,
-  showGrade
+  showGrade,
 }) {
   const [grade, setGrade] = useState(course.grade || 0);
   const [isOpen, setIsOpen] = useState(false);
@@ -49,12 +49,12 @@ export function MyCourse({
   };
 
   // Determine grade color
-  let gradeColorClass = "text-yellow-300";
+  let gradeColorClass = 'text-yellow-300';
   if (grade > 7) {
-    gradeColorClass = "text-green-300";
+    gradeColorClass = 'text-green-300';
   }
   if (grade == 10.0) {
-    gradeColorClass = "text-pink-300";
+    gradeColorClass = 'text-pink-300';
   }
 
   return (
@@ -102,7 +102,11 @@ export function MyCourse({
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={onDropClassButton} className="bg-red-50 hover:bg-red-100 hover:text-red-700">
+            <Button
+              variant="outline"
+              onClick={onDropClassButton}
+              className="bg-red-50 hover:bg-red-100 hover:text-red-700"
+            >
               Drop Class
             </Button>
             <Button onClick={handleSave}>Save</Button>
@@ -111,21 +115,19 @@ export function MyCourse({
       </Dialog>
 
       <tr
-        className="hover:bg-blue-500 hover:text-white cursor-pointer border-b transition-colors"
+        className="cursor-pointer border-b transition-colors hover:bg-blue-500 hover:text-white"
         onClick={() => setIsOpen(true)}
       >
-        <td className="text-xs md:text-lg p-1 flex items-center">
-          <ChevronRight className="h-4 w-4 inline mr-1" />
+        <td className="flex items-center p-1 text-xs md:text-lg">
+          <ChevronRight className="mr-1 inline h-4 w-4" />
           {course.name}
         </td>
-        <td className="text-xs md:text-lg p-1">{course.code}</td>
-        <td className="text-xs md:text-lg p-1">{course.ECTS}</td>
-        <td className="text-xs md:text-lg p-1">{course.category}</td>
-        <td className="text-xs md:text-lg p-1">{course.semester}</td>
+        <td className="p-1 text-xs md:text-lg">{course.code}</td>
+        <td className="p-1 text-xs md:text-lg">{course.ECTS}</td>
+        <td className="p-1 text-xs md:text-lg">{course.category}</td>
+        <td className="p-1 text-xs md:text-lg">{course.semester}</td>
         {showGrade && (
-          <td className={`text-xs md:text-lg p-1 ${gradeColorClass}`}>
-            {course.grade}
-          </td>
+          <td className={`p-1 text-xs md:text-lg ${gradeColorClass}`}>{course.grade}</td>
         )}
       </tr>
     </>

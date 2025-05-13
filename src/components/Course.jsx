@@ -1,5 +1,5 @@
-import React from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from 'lucide-react';
+import React from 'react';
 
 export function Course({ course, onAdd }) {
   function onClickButton() {
@@ -7,19 +7,19 @@ export function Course({ course, onAdd }) {
   }
 
   return (
-    <tr 
-      key={course.code} 
-      className="hover:bg-green-500 hover:text-white cursor-pointer border-b transition-colors"
+    <tr
+      key={course.code}
+      className="cursor-pointer border-b transition-colors hover:bg-green-500 hover:text-white"
       onClick={onClickButton}
     >
-      <td className="text-xs md:text-lg p-1 flex items-center">
-        <ChevronRight className="h-4 w-4 inline mr-1" />
+      <td className="flex items-center p-1 text-xs md:text-lg">
+        <ChevronRight className="mr-1 inline h-4 w-4" />
         {course.name}
       </td>
-      <td className="text-xs md:text-lg p-1">{course.code}</td>
-      <td className="text-xs md:text-lg p-1">{course.ECTS}</td>
-      <td className="text-xs md:text-lg p-1">{course.category}</td>
-      <td className="text-xs md:text-lg p-1">{course.semester}</td>
+      <td className="p-1 text-xs md:text-lg">{course.code}</td>
+      <td className="p-1 text-xs md:text-lg">{course.ECTS}</td>
+      <td className="p-1 text-xs md:text-lg">{course.category}</td>
+      <td className="p-1 text-xs md:text-lg">{course.semester}</td>
     </tr>
   );
 }
