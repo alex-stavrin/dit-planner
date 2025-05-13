@@ -138,11 +138,12 @@ export function FilterBar({ categories, setCategories, semesters, setSemesters, 
                         )}
                     </Button>
                 </SheetTrigger>
-                <SheetContent className="sm:max-w-md">
+                <SheetContent className="sm:max-w-md flex flex-col h-full">
                     <SheetHeader>
                         <SheetTitle>Filters</SheetTitle>
                     </SheetHeader>
-                    <div className="py-6 space-y-6">
+                    {/* Make the content area scrollable with flex-1 and overflow-auto */}
+                    <div className="py-6 space-y-6 flex-1 overflow-y-auto">
                         {/* Semesters Selection */}
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
@@ -165,7 +166,7 @@ export function FilterBar({ categories, setCategories, semesters, setSemesters, 
                             <div className="border rounded-md">
                                 <Command>
                                     <CommandInput placeholder="Search semesters..." />
-                                    <CommandList>
+                                    <CommandList className="max-h-[200px]">
                                         <CommandEmpty>No results found.</CommandEmpty>
                                         <CommandGroup>
                                             {allSemesters.map((semester) => (
@@ -227,7 +228,7 @@ export function FilterBar({ categories, setCategories, semesters, setSemesters, 
                             <div className="border rounded-md">
                                 <Command>
                                     <CommandInput placeholder="Search categories..." />
-                                    <CommandList>
+                                    <CommandList className="max-h-[200px]">
                                         <CommandEmpty>No results found.</CommandEmpty>
                                         <CommandGroup>
                                             {allCategories.map((category) => (
@@ -285,7 +286,7 @@ export function FilterBar({ categories, setCategories, semesters, setSemesters, 
                             </Select>
                         </div>
                     </div>
-                    <SheetFooter className="sm:justify-end">
+                    <SheetFooter className="mt-2 border-t pt-4 sm:justify-end">
                         <Button variant="outline" onClick={handleCancel} className="mr-2">
                             Cancel
                         </Button>
