@@ -1,33 +1,30 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import { Flex, useToast } from '@chakra-ui/react';
-import {Home} from "./pages/Home"
+import { Link as ReactRouterLink } from 'react-router-dom';
+import { Home } from "./pages/Home";
 import { Settings } from './pages/Settings';
 import { coursesData } from "./coursesData";
 import { coursesDataVersion } from './coursesDataVersion';
-import { useState,useEffect  } from "react";
+import { useState, useEffect } from "react";
 import { AllCourses } from './pages/AllCourses';
-import { Link as ReactRouterLink } from 'react-router-dom'
-import { Link as ChakraLink, Text } from '@chakra-ui/react'
 import BurgerHeader from './components/BurgerHeader';
 import { MakeCourse } from './pages/MakeCourse';
 import { saveAs } from "file-saver"; // To export course data
 import CurrentCourses from './pages/CurrentCourses';
-import { Box } from '@chakra-ui/react';
 import PassedCourses from './pages/PassedCourses';
 import PlannedCourses from './pages/PlannedCourses';
-import {  useColorMode } from "@chakra-ui/react";
+import { useToast } from './hooks/use-toast';
+import { Toaster } from './components/ui/toaster';
 
 function App() {
   const [courses, setCourses] = useState([]);
-  const toast = useToast();
+  const { toast } = useToast();
   const [isFirstLoad, setFirstLoad] = useState(true);
-  const { setColorMode } = useColorMode();
-
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
       // force dark mode
-      setColorMode("dark");
+      setTheme("dark");
       if(isFirstLoad)
       {
           const savedCourses = localStorage.getItem("courses");
@@ -48,7 +45,7 @@ function App() {
           }
           else
           { 
-            if(version != coursesDataVersion)
+            if(version !== coursesDataVersion)
             {
                // other version
               syncSavedWithCourseData();
@@ -69,7 +66,6 @@ function App() {
     {
       localStorage.setItem("courses", JSON.stringify(courses));   
     }
-
   }, [courses]);
 
   const resetData = () => {
@@ -79,7 +75,7 @@ function App() {
   };
 
   const makeCourse = (name, ECTS) => {
-    let newCourse = {name, code: "MC" + name.substring(0, 2).toUpperCase() + courses.length,ECTS, category: "MC", hasCourse:true, userMade:true}
+    let newCourse = {name, code: "MC" + name.substring(0, 2).toUpperCase() + courses.length, ECTS, category: "MC", hasCourse:true, userMade:true};
     setCourses(prevItems => [...prevItems, newCourse]);
     showToast("Course created", newCourse.name + " added to planned courses", "success");
   }
@@ -123,18 +119,14 @@ function App() {
     reader.readAsText(file);
   };
 
-
-  const showToast = (title,description, status) => {
-      toast({
-        title,
-        description,
-        status,
-        duration: 1000,
-        isClosable: true,
-        position: "top",
-        variant: "solid"
-      });
-    };
+  const showToast = (title, description, status) => {
+    toast({
+      title,
+      description,
+      variant: status === "error" ? "destructive" : status === "success" ? "success" : "info",
+      duration: 1000,
+    });
+  };
 
   const addHasCourse = (addedCourse) => {
       setCourses((prevCourses) =>
@@ -161,7 +153,6 @@ function App() {
         );
         showToast("Course Removed", "Removed " + removedCourse.name + " from planned courses", "info");
       }
-
   };
 
   const changeGrade = (newGrade, changedCourse) => {
@@ -196,22 +187,18 @@ function App() {
       else
       {
           showToast("Removed current course", "Removed " + updatedCourse.name + " from current courses", "info");
-
       }
   };
 
-  const currentCourseState = (course) =>
-  {
+  const currentCourseState = (course) => {
     return course.isActive && !(course.grade >= 5) && course.hasCourse;
   }
 
-  const plannedCourseState = (course) =>
-  {
+  const plannedCourseState = (course) => {
     return course.hasCourse && !(course.isActive) && !(course.grade >= 5)
   }
 
-  const passedCourseState = (course) =>
-  {
+  const passedCourseState = (course) => {
     return course.hasCourse && course.grade >= 5
   }
 
@@ -223,8 +210,8 @@ function App() {
     {
       const savedCourses = JSON.parse(localStorage.getItem("courses"));
       let newCourses  = coursesData;
-      savedCourses.forEach((itemOld, index) => {
-        newCourses.forEach((itemNew, index) => {
+      savedCourses.forEach((itemOld) => {
+        newCourses.forEach((itemNew) => {
           if(itemOld.code === itemNew.code)
           {
             itemNew.grade = itemOld.grade;
@@ -251,43 +238,52 @@ function App() {
   }
 
   const noCurrentComponent = () => {
-    return <Flex width={"100%"} height={"100%"} alignContent={"center"} justifyContent={"center"} mt={5}>
-        <Text textAlign={"center"}>You have no current classes. Find some in{" "}
-          <ChakraLink as={ReactRouterLink} to='/dit-planner/planned' color='blue.500'>
-              planned courses.
-          </ChakraLink>
-        </Text>
-    </Flex>
+    return (
+      <div className="w-full h-full flex items-center justify-center mt-5">
+        <p className="text-center">
+          You have no current classes. Find some in{" "}
+          <ReactRouterLink to='/dit-planner/planned' className="text-blue-500">
+            planned courses.
+          </ReactRouterLink>
+        </p>
+      </div>
+    );
   }
 
   const noPassedComponent = () => {
-    return <Flex width={"100%"} height={"100%"} alignContent={"center"} justifyContent={"center"} mt={5}>
-      <Text>You have no passed classes. With a grade higher or equal to 5 it will be added here. Grade your classes in{" "}
-        <ChakraLink as={ReactRouterLink} to='/dit-planner/planned' color='blue.500'>
+    return (
+      <div className="w-full h-full flex items-center justify-center mt-5">
+        <p>
+          You have no passed classes. With a grade higher or equal to 5 it will be added here. Grade your classes in{" "}
+          <ReactRouterLink to='/dit-planner/planned' className="text-blue-500">
             planned courses.
-        </ChakraLink>
-        {" "}or{" "}
-        <ChakraLink as={ReactRouterLink} to='/dit-planner/current' color='blue.500'>
+          </ReactRouterLink>
+          {" "}or{" "}
+          <ReactRouterLink to='/dit-planner/current' className="text-blue-500">
             current courses.
-        </ChakraLink>
-      </Text>
-    </Flex>
+          </ReactRouterLink>
+        </p>
+      </div>
+    );
   }
 
   const noPlannedComponent = () => {
-    return <Flex width={"100%"} height={"100%"} alignContent={"center"} justifyContent={"center"} mt={5}>
-      <Text>You have no planned classes. Find some in{" "}
-        <ChakraLink as={ReactRouterLink} to='/dit-planner/all' color='blue.500'>
+    return (
+      <div className="w-full h-full flex items-center justify-center mt-5">
+        <p>
+          You have no planned classes. Find some in{" "}
+          <ReactRouterLink to='/dit-planner/all' className="text-blue-500">
             all courses.
-        </ChakraLink>
-      </Text>
-    </Flex>
+          </ReactRouterLink>
+        </p>
+      </div>
+    );
   }
 
   return (
-    <Flex w="100%" h="100%" flexDirection={"column"}>
+    <div className={`flex w-full h-full flex-col ${theme === 'dark' ? 'dark' : ''}`}>
       <BurgerHeader/>
-      <Box overflow={"auto"}>
+      <div className="overflow-auto">
         <Routes>
           <Route path="/dit-planner" element={<Home courses={courses}/>} />
 
@@ -309,10 +305,9 @@ function App() {
 
           <Route path="/dit-planner/settings" element={<Settings onResetData={resetData} onSyncData={syncSavedWithCourseData} onExportData={() => exportToFile(courses)} onImportData={importFromFile} version={coursesDataVersion} />} />
         </Routes>
-        </Box>     
-    </Flex>
-
-
+      </div>
+      <Toaster />
+    </div>
   );
 }
 
