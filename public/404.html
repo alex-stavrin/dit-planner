@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      // bounce to root but remember original path
+      sessionStorage.redirect =
+        location.protocol + '//' + location.host + location.pathname + location.search + location.hash;
+      location.replace('/');
+    </script>
+  </head>
+  <body>Redirecting…</body>
+</html>

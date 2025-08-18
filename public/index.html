@@ -4,24 +4,34 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Plan your courses for DIT"
-    />
+    <meta name="description" content="Plan your courses for DIT" />
     <meta property="og:image" content="%PUBLIC_URL%/dit-planner-icon.ico" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="icon" href="%PUBLIC_URL%/dit-planner-icon.ico" />
     <title>Dit Planner</title>
+
+    <!-- restore deep link after GH Pages 404 redirect -->
+    <script>
+      (function () {
+        if (sessionStorage.redirect) {
+          const url = sessionStorage.redirect;
+          delete sessionStorage.redirect;
+          window.history.replaceState(null, null, url);
+        }
+      })();
+    </script>
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3XN0RF9018"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-3XN0RF9018', { send_page_view: false });
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-3XN0RF9018', { send_page_view: false });
-  </script>
 </html>
