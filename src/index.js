@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {ChakraProvider, extendTheme, ColorModeScript} from "@chakra-ui/react"
 import { BrowserRouter as Router } from 'react-router-dom';
+import GA4RouteChangeTracker from './components/GA4RouteChangeTracker';
 
 const config = 
 {
@@ -19,7 +20,8 @@ root.render(
   <>
     <ColorModeScript initialColorMode={customTheme.config.initialColorMode}/>
     <ChakraProvider theme={customTheme}>
-      <Router>    
+      <Router>
+        <GA4RouteChangeTracker />    
         <App />
       </Router>
     </ChakraProvider>
