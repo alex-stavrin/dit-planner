@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/dit-planner/static/css/main.4c46cfcf.css",
-    "main.js": "/dit-planner/static/js/main.7646e536.js",
+    "main.js": "/dit-planner/static/js/main.528a2274.js",
     "static/js/453.e79c9c4c.chunk.js": "/dit-planner/static/js/453.e79c9c4c.chunk.js",
     "index.html": "/dit-planner/index.html",
     "main.4c46cfcf.css.map": "/dit-planner/static/css/main.4c46cfcf.css.map",
-    "main.7646e536.js.map": "/dit-planner/static/js/main.7646e536.js.map",
+    "main.528a2274.js.map": "/dit-planner/static/js/main.528a2274.js.map",
     "453.e79c9c4c.chunk.js.map": "/dit-planner/static/js/453.e79c9c4c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4c46cfcf.css",
-    "static/js/main.7646e536.js"
+    "static/js/main.528a2274.js"
   ]
 }
