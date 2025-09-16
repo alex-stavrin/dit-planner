@@ -28,6 +28,15 @@ export function Home({courses})
     const [ypPassed, setYpPassed] = useState(0);
     const [ypPlanned, setYpPlanned] = useState(0);
 
+    const [eymPassed, setEymPassed] = useState(0);
+    const [eymPlanned, setEymPlanned] = useState(0);
+
+    const [projectPassed, setProjectPassed] = useState(0);
+    const [projectPlanned, setProjectPlanned] = useState(0);
+
+    const [tpPassed, setTpPassed] = useState(0);
+    const [tpPlanned, setTpPlanned] = useState(0);
+
     const [currentCount, setCurrentCount] = useState(0);
     const [passedCount, setPassedCount] = useState(0);
     const [plannedCount, setPlannedCount] = useState(0);
@@ -74,13 +83,27 @@ export function Home({courses})
     {
         let passedCount = 0;
         let passedEcts = 0;
+
         let plannedEcts = 0;
         let weightedSum = 0;
+
         let currentCountSum = 0;
+
         let gpPassedSum = 0;
         let gpPlannedSum = 0;
+
         let ypPassedSum = 0;
         let ypPlannedSum = 0;
+
+        let eymPassedSum = 0;
+        let eymPlannedSum = 0;
+
+        let projectPassedSum = 0;
+        let projectPlannedSum = 0;
+
+        let tpPassedSum = 0;
+        let tpPlannedSum = 0;
+
         let s1BPassedSum=0;
         let s1BPlannedSum=0;
         let s1YPassedSum=0;
@@ -130,6 +153,21 @@ export function Home({courses})
                 if(course.category==="ΥΜ")
                 {
                     ypPassedSum++;
+                }
+
+                if(course.category === "ΕΥΜ")
+                {
+                    eymPassedSum++;
+                }
+
+                if(course.category === "P")
+                {
+                    projectPassedSum++;
+                }
+
+                if (course.category === "Π")
+                {
+                    tpPassedSum++;
                 }
 
                 if(course.s1)
@@ -228,6 +266,21 @@ export function Home({courses})
                     ypPlannedSum++;
                 }
 
+                if(course.category === "ΕΥΜ")
+                {
+                    eymPlannedSum++;
+                }
+
+                if(course.category === "P")
+                {
+                    projectPlannedSum++;
+                }
+
+                if (course.category === "Π")
+                {
+                    tpPlannedSum++;
+                }
+
                 if(course.s1)
                 {
                     if(course.s1==="Υ")
@@ -313,10 +366,22 @@ export function Home({courses})
                 setCurrentCount((prev) => prev+1);
             }
         });
+
         setEctsPassedSum(passedEcts);
         setEctsPlannedSum(plannedEcts);
+
         setGpPassed(gpPassedSum);
         setGpPlanned(gpPlannedSum);
+
+        setEymPlanned(eymPlannedSum);
+        setEymPassed(eymPassedSum);
+
+        setProjectPassed(projectPassedSum);
+        setProjectPlanned(projectPlannedSum);
+
+        setTpPassed(tpPassedSum);
+        setTpPlanned(tpPlannedSum);
+
         setYpPassed(ypPassedSum);
         setYpPlanned(ypPlannedSum);
 
@@ -390,6 +455,18 @@ export function Home({courses})
                     <Stat color={ypPassed >= 18 ? "green.300" : "white"}>
                         <StatLabel>Passed Υποχρεωτικά</StatLabel>
                         <StatNumber>{ypPassed}/18</StatNumber>
+                    </Stat>
+                    <Stat color={eymPassed >= 4 ? "green.300" : "white"}>
+                        <StatLabel>Passed Κατά Επιλογή Υποχρεωτικά</StatLabel>
+                        <StatNumber>{eymPassed}/4</StatNumber>
+                    </Stat>
+                    <Stat color={projectPassed >= 1 ? "green.300" : "white"}>
+                        <StatLabel>Passed Project</StatLabel>
+                        <StatNumber>{projectPassed}/1</StatNumber>
+                    </Stat>
+                    <Stat color={tpPassed >= 2 ? "green.300" : "white"}>
+                        <StatLabel>Passed Πτυχιακή/Πρακτική</StatLabel>
+                        <StatNumber>{tpPassed}/2</StatNumber>
                     </Stat>
                     <Table>
                         <Thead>
@@ -489,6 +566,18 @@ export function Home({courses})
                         <StatLabel color={ypPlanned === 18 ? "green.300" : "white"}>Planned Υποχρεωτικά</StatLabel>
                         <StatNumber color={ypPlanned === 18 ? "green.300" : "white"}>{ypPlanned}/18</StatNumber>
                     </Stat>
+                    <Stat>
+                        <StatLabel color={eymPlanned >= 4 ? "green.300" : "white"}>Planned Κατα Επιλογή Υποχρεωτικά</StatLabel>
+                        <StatNumber color={eymPlanned >= 4 ? "green.300" : "white"}>{eymPlanned}/4</StatNumber>
+                    </Stat>
+                    <Stat>
+                        <StatLabel color={projectPlanned >=1 ? "green.300" : "white"}>Planned Project</StatLabel>
+                        <StatNumber color={projectPlanned >= 1 ? "green.300" : "white"}>{projectPlanned}/1</StatNumber>
+                    </Stat>
+                    <Stat>
+                        <StatLabel color={tpPlanned >=2 ? "green.300" : "white"}>Planned Πτυχιακή/Πρακτική</StatLabel>
+                        <StatNumber color={tpPlanned >= 2 ? "green.300" : "white"}>{tpPlanned}/2</StatNumber>
+                    </Stat>                   
                     <Table>
                         <Thead>
                             <Tr>

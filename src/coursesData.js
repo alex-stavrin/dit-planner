@@ -1309,7 +1309,7 @@ export const coursesData = [
     s4: "",
     s5: "",
     s6: "",
-    semester: "8"
+    semester: "7"
   },
   {
     name: "Υπολογιστική Θεωρία Μηχανικής Μάθησης",
