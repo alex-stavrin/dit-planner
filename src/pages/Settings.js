@@ -91,7 +91,7 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
                                 </ListItem>
                             </UnorderedList>
                             <Text mt={5}>
-                                Contribute in <Link href='https://github.com/Alekossta/dit-planner' color={"blue.500"} isExternal>Github</Link>
+                                Contribute in <Link href='https://github.com/alex-stavrin/dit-planner' color={"blue.500"} isExternal>Github</Link>
                             </Text>
                         </Box>
                         <Box>
