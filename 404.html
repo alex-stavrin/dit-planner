@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <title>Redirecting…</title>
     <script>
-      // bounce to root but remember original path
+      // bounce to the app root but remember original path
       sessionStorage.redirect =
         location.protocol + '//' + location.host + location.pathname + location.search + location.hash;
-      location.replace('/');
+      location.replace('/dit-planner/');
     </script>
   </head>
   <body>Redirecting…</body>
