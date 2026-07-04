@@ -23,7 +23,7 @@ export function MyCoursesShower({courses, onRemove, onChangeGrade, onUpdateActiv
                                 return (
                                     <MyCourse 
                                         course={course} 
-                                        key={course.code} 
+                                        key={course.id}
                                         onRemove={onRemove} 
                                         onChangeGrade={onChangeGrade} 
                                         onUpdateActivity={onUpdateActivity} 

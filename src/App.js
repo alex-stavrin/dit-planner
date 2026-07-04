@@ -18,6 +18,81 @@ import PassedCourses from './pages/PassedCourses';
 import PlannedCourses from './pages/PlannedCourses';
 import {  useColorMode } from "@chakra-ui/react";
 
+// Course codes can repeat across the catalog (e.g. the same special-topics course
+// offered in two semesters), so every course gets a unique `id` used for all
+// matching/keys. `code` is only ever shown to the user. Existing valid ids are
+// preserved; legacy data (saved or imported before ids existed) gets ids assigned.
+const normalizeCourses = (list) => {
+  const used = new Set();
+  return list.map((course) => {
+    let id = course.id;
+    if (!id || used.has(id)) {
+      const base = course.code || course.category || "course";
+      id = base;
+      let n = 1;
+      while (used.has(id)) {
+        id = `${base}#${n++}`;
+      }
+    }
+    used.add(id);
+    return course.id === id ? course : { ...course, id };
+  });
+};
+
+const parseSavedCourses = (savedCourses) => {
+  if (!savedCourses) {
+    return null;
+  }
+
+  try {
+    const parsedCourses = JSON.parse(savedCourses);
+    return Array.isArray(parsedCourses) ? parsedCourses : null;
+  } catch {
+    return null;
+  }
+};
+
+const courseSyncKeys = (course) => [
+  `id:${course.id || ""}`,
+  `exact:${course.code || ""}|${course.name || ""}|${course.semester || ""}|${course.ECTS || ""}|${course.category || ""}`,
+  `code-name:${course.code || ""}|${course.name || ""}|${course.ECTS || ""}|${course.category || ""}`,
+  `name:${course.name || ""}|${course.ECTS || ""}|${course.category || ""}`,
+];
+
+const buildUniqueCourseIndex = (list) => {
+  const index = new Map();
+  list.forEach((course, position) => {
+    courseSyncKeys(course).forEach((key) => {
+      index.set(key, index.has(key) ? null : position);
+    });
+  });
+  return index;
+};
+
+const mergeSavedCourseState = (course, savedCourse) => {
+  const mergedCourse = { ...course };
+
+  if (course.hasCourse || savedCourse.hasCourse) {
+    mergedCourse.hasCourse = true;
+  } else if (course.hasCourse === false || savedCourse.hasCourse === false) {
+    mergedCourse.hasCourse = false;
+  }
+
+  if (course.isActive || savedCourse.isActive) {
+    mergedCourse.isActive = true;
+  } else if (course.isActive === false || savedCourse.isActive === false) {
+    mergedCourse.isActive = false;
+  }
+
+  const currentGrade = Number(course.grade);
+  const savedGrade = Number(savedCourse.grade);
+  if (!Number.isNaN(savedGrade) && (Number.isNaN(currentGrade) || savedGrade > currentGrade)) {
+    mergedCourse.grade = savedCourse.grade;
+  }
+
+  return mergedCourse;
+};
+
 function App() {
   const [courses, setCourses] = useState([]);
   const toast = useToast();
@@ -30,34 +105,36 @@ function App() {
       setColorMode("dark");
       if(isFirstLoad)
       {
+          const currentVersion = String(coursesDataVersion);
           const savedCourses = localStorage.getItem("courses");
+          const parsedSavedCourses = parseSavedCourses(savedCourses);
           const version = localStorage.getItem("version");
           if(!version)
           {
             if(!savedCourses)
             {
               // initial load
-              setCourses(coursesData);
+              setCourses(normalizeCourses(coursesData));
             }
             else
             {
               // very old sync
               syncSavedWithCourseData();
             }
-            localStorage.setItem("version", coursesDataVersion);
+            localStorage.setItem("version", currentVersion);
           }
           else
           { 
-            if(version != coursesDataVersion)
+            if(version !== currentVersion)
             {
                // other version
               syncSavedWithCourseData();
-              localStorage.setItem("version", coursesDataVersion);
+              localStorage.setItem("version", currentVersion);
             }
             else
             {
-              // normal load
-              setCourses(JSON.parse(savedCourses));
+              // normal load (fall back to defaults if the courses key is missing)
+              setCourses(normalizeCourses(parsedSavedCourses || coursesData));
             }
           }
           setFirstLoad(false);
@@ -73,14 +150,23 @@ function App() {
   }, [courses]);
 
   const resetData = () => {
-    localStorage.setItem("courses", JSON.stringify(coursesData));   
-    setCourses(coursesData);
+    const fresh = normalizeCourses(coursesData);
+    localStorage.setItem("courses", JSON.stringify(fresh));
+    setCourses(fresh);
     showToast("Data Reset", "All your data was deleted.", "success");
   };
 
   const makeCourse = (name, ECTS) => {
-    let newCourse = {name, code: "MC" + name.substring(0, 2).toUpperCase() + courses.length,ECTS, category: "MC", hasCourse:true, userMade:true}
-    setCourses(prevItems => [...prevItems, newCourse]);
+    // find a code that no existing course uses (array length can repeat after deletions)
+    const codePrefix = "MC" + name.substring(0, 2).toUpperCase();
+    const codeExists = (code) => courses.some(course => course.code === code);
+    let suffix = courses.length;
+    while(codeExists(codePrefix + suffix))
+    {
+      suffix++;
+    }
+    let newCourse = {name, code: codePrefix + suffix, ECTS, category: "MC", hasCourse:true, userMade:true}
+    setCourses(prevItems => normalizeCourses([...prevItems, newCourse]));
     showToast("Course created", newCourse.name + " added to planned courses", "success");
   }
 
@@ -104,9 +190,27 @@ function App() {
   const importFromFile = (file) => {
     const reader = new FileReader();
     reader.onload = (event) => {
-      const importedData = JSON.parse(event.target.result);
-      // Assuming coursesData structure is valid
-      setCourses(importedData);
+      let importedData;
+      try {
+        importedData = JSON.parse(event.target.result);
+      } catch (error) {
+        showToast(
+          "Import Failed",
+          "The selected file is not valid JSON.",
+          "error",
+        );
+        return;
+      }
+      if(!Array.isArray(importedData) || importedData.some(course => typeof course !== "object" || course === null || typeof course.code !== "string"))
+      {
+        showToast(
+          "Import Failed",
+          "The selected file is not a valid courses export.",
+          "error",
+        );
+        return;
+      }
+      setCourses(normalizeCourses(importedData));
       showToast(
         "Data Imported",
         "Your courses data has been successfully imported.",
@@ -139,7 +243,7 @@ function App() {
   const addHasCourse = (addedCourse) => {
       setCourses((prevCourses) =>
           prevCourses.map((course) =>
-            course.code === addedCourse.code ? { ...course, hasCourse: true } : course
+            course.id === addedCourse.id ? { ...course, hasCourse: true } : course
           )
       );
       showToast("Course Added", "Added " + addedCourse.name + " to planned courses", "success");
@@ -148,7 +252,7 @@ function App() {
   const removeHasCourse = (removedCourse) => {
       if(removedCourse.category === "MC")
       {
-        const updatedArray = courses.filter(course => course.code !== removedCourse.code);
+        const updatedArray = courses.filter(course => course.id !== removedCourse.id);
         setCourses(updatedArray);
         showToast("Custom Course Removed", "Removed " + removedCourse.name + " from courses because you dropped it.", "info");
       }
@@ -156,7 +260,7 @@ function App() {
       {
         setCourses((prevCourses) =>
             prevCourses.map((course) =>
-              course.code === removedCourse.code ? { ...course, hasCourse: false, grade:0, isActive: false } : course
+              course.id === removedCourse.id ? { ...course, hasCourse: false, grade:0, isActive: false } : course
             )
         );
         showToast("Course Removed", "Removed " + removedCourse.name + " from planned courses", "info");
@@ -173,7 +277,7 @@ function App() {
         }
         setCourses((prevCourses) =>
             prevCourses.map((course) =>
-                course.code === changedCourse.code ? { ...course, grade: newGrade } : course
+                course.id === changedCourse.id ? { ...course, grade: newGrade } : course
             )
         );
         if(newGrade >= 5)
@@ -186,7 +290,7 @@ function App() {
   const updateActivity = (newActivity, updatedCourse) => {
       setCourses((prevCourses) =>
           prevCourses.map((course) =>
-              course.code === updatedCourse.code ? { ...course, isActive: newActivity } : course
+              course.id === updatedCourse.id ? { ...course, isActive: newActivity } : course
           )
       );
       if(newActivity)
@@ -219,19 +323,22 @@ function App() {
   // into the new courseData data structure
   const syncSavedWithCourseData = () => {
     const notParsedCourses = localStorage.getItem("courses");
-    if(notParsedCourses)
+    const parsedSavedCourses = parseSavedCourses(notParsedCourses);
+    if(parsedSavedCourses)
     {
-      const savedCourses = JSON.parse(localStorage.getItem("courses"));
-      let newCourses  = coursesData;
-      savedCourses.forEach((itemOld, index) => {
-        newCourses.forEach((itemNew, index) => {
-          if(itemOld.code === itemNew.code)
-          {
-            itemNew.grade = itemOld.grade;
-            itemNew.isActive = itemOld.isActive;
-            itemNew.hasCourse = itemOld.hasCourse;
-          }
-        })
+      const savedCourses = normalizeCourses(parsedSavedCourses);
+      // deep copy so we never mutate the imported coursesData module
+      let newCourses = normalizeCourses(coursesData.map(course => ({ ...course })));
+      const newCourseIndex = buildUniqueCourseIndex(newCourses);
+      savedCourses.forEach((itemOld) => {
+        const targetIndex = courseSyncKeys(itemOld)
+          .map((key) => newCourseIndex.get(key))
+          .find((index) => index !== undefined && index !== null);
+
+        if(targetIndex !== undefined)
+        {
+          newCourses[targetIndex] = mergeSavedCourseState(newCourses[targetIndex], itemOld);
+        }
       })
       // add our own user courses
       savedCourses.forEach(course => {
@@ -241,12 +348,13 @@ function App() {
         }
       });
 
-      setCourses(newCourses);
+      setCourses(normalizeCourses(newCourses));
       showToast("Synced Data", "Changes were made in the course data. Your data is synced. Look for any errors though", "success");
     }
     else
     {
-      showToast("No saved data", "You have no saved data to sync", "error");
+      setCourses(normalizeCourses(coursesData));
+      showToast("No saved data", "Loaded the latest course data instead.", "info");
     }  
   }
 

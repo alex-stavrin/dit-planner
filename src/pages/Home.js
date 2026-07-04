@@ -84,6 +84,7 @@ export function Home({courses})
         let passedCount = 0;
         let passedEcts = 0;
 
+        let plannedCountSum = 0;
         let plannedEcts = 0;
         let weightedSum = 0;
 
@@ -139,8 +140,6 @@ export function Home({courses})
             // passed course
             if(course.grade>=5)
             {
-                setPassedCount((prev) => prev+1);
-
                 passedCount++;
                 passedEcts+=parseInt(course.ECTS);
                 weightedSum += parseInt(course.ECTS) * course.grade;
@@ -252,8 +251,7 @@ export function Home({courses})
             // planed course
             if(course.hasCourse)
             {
-                setPlannedCount((prev) => prev+1);
-
+                plannedCountSum++;
                 plannedEcts+=parseInt(course.ECTS);
 
                 if(course.category==="ΓΠ")
@@ -363,9 +361,12 @@ export function Home({courses})
             if(course.isActive)
             {
                 currentCountSum++;
-                setCurrentCount((prev) => prev+1);
             }
         });
+
+        setPassedCount(passedCount);
+        setPlannedCount(plannedCountSum);
+        setCurrentCount(currentCountSum);
 
         setEctsPassedSum(passedEcts);
         setEctsPlannedSum(plannedEcts);
@@ -424,6 +425,10 @@ export function Home({courses})
         if(passedEcts !== 0)
         {
             setCurrentGrade(weightedSum / passedEcts);
+        }
+        else
+        {
+            setCurrentGrade(0);
         }
     }
     return (

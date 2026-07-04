@@ -29,6 +29,8 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
         if (file) {
           onImportData(file);
         }
+        // reset so picking the same file again still fires onChange
+        event.target.value = "";
       };
     
       const exportButtonClicked = () => {

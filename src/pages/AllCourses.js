@@ -84,12 +84,12 @@ export function AllCourses({courses, onAdd})
                 </Tr>
             </Thead>
             <Tbody>
-  {courses
-    .sort(getCompareFunction(sortBy)) // Pass `sortBy` to get the correct compare function
-    .map((course, index) => {
+  {[...courses]
+    .sort(getCompareFunction(sortBy)) // copy first: sort mutates in place
+    .map((course) => {
       // Filter and display courses
       if (!course.hasCourse && isFilteredCourse(course)) {
-        return <Course course={course} key={index} onAdd={onAdd} />;
+        return <Course course={course} key={course.id} onAdd={onAdd} />;
       } else {
         return null;
       }
