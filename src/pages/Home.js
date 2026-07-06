@@ -5,10 +5,8 @@ import {
     Stat,
     StatLabel,
     StatNumber,
-    Box,
     Heading,
-    Stack,
-    StackDivider,
+    Text,
 } from '@chakra-ui/react'
 import { Card, CardHeader, CardBody } from '@chakra-ui/react'
 import { Thead, Tr, Table, Td, Tbody} from "@chakra-ui/react";
@@ -433,25 +431,26 @@ export function Home({courses})
     }
     return (
     <Flex align="center" justifyContent="center" flexDirection={"column"} overflow={"auto"}>
-        <CircularProgress value={ectsPassedSum} color='blue.400'  size='250px' thickness='5px' min={0} max={240} mt={3}>
-            <CircularProgressLabel fontSize={"0.2em"}>{ectsPassedSum+" "}ects</CircularProgressLabel>
+        <CircularProgress value={ectsPassedSum} color='blue.400'  size='330px' thickness='5px' min={0} max={240} mt={3} mb={3}>
+            <CircularProgressLabel>
+                <Text fontSize='56px' lineHeight='1'>{ectsPassedSum+" "}ECTS</Text>
+                <Text fontSize='20px' lineHeight='1' mt='20px' color='gray.400'>Average Grade : {currentGrade.toFixed(2)}</Text>
+            </CircularProgressLabel>
         </CircularProgress>
-        <Flex flexDirection={"column"} w={["100%", "75%", "50%"]} mb={4}>
+        <Flex flexDirection={"column"} w={["100%", "90%", "80%"]} mb={4}>
             <Button as={RouterLink} to="/dit-planner/all" h={65}colorScheme="blue" borderRadius={0} mb={1}>
                 Add Courses
             </Button>
         </Flex>
-        <Card w={["100%", "75%", "50%"]} mb={4}>
-            <CardHeader>
-                <Heading sizes='xl'>Your Stats</Heading>
-            </CardHeader>
-            <CardBody>
-                <Stack divider={<StackDivider />} spacing='4'>
-                <Box>
-                    <Heading size='lg' mb={5}>Passed Overview</Heading>
-                    <Stat>
-                        <StatLabel>Average</StatLabel>
-                        <StatNumber>{currentGrade.toFixed(2)}</StatNumber>
+        <Flex w={["100%", "90%", "80%"]} mb={4} gap={4} direction={{ base: 'column', lg: 'row' }} align='stretch'>
+            <Card flex='1'>
+                <CardHeader>
+                    <Heading size='lg'>Passed Overview</Heading>
+                </CardHeader>
+                <CardBody>
+                    <Stat color={ectsPassedSum >= 240 ? "green.300" : "white"}>
+                        <StatLabel>Passed ECTS</StatLabel>
+                        <StatNumber>{ectsPassedSum}/240</StatNumber>
                     </Stat>
                     <Stat color={gpPassed >= 3 ? "green.300" : "white"}>
                         <StatLabel>Passed Γενικης Παιδειας</StatLabel>
@@ -556,12 +555,16 @@ export function Home({courses})
                             </Tr>
                         </Tbody>
                     </Table>
-                </Box>
-                <Box>
-                    <Heading size='lg' mb={5}>Planned Overview</Heading>
-                    <Stat>
-                        <StatLabel color={ectsPlannedSum >= 240 ? "green.300" : "white"}>Planned ECTS</StatLabel>
-                        <StatNumber color={ectsPlannedSum >= 240 ? "green.300" : "white"}>{ectsPlannedSum}/240</StatNumber>
+                </CardBody>
+            </Card>
+            <Card flex='1'>
+                <CardHeader>
+                    <Heading size='lg'>Planned Overview</Heading>
+                </CardHeader>
+                <CardBody>
+                    <Stat color={ectsPlannedSum >= 240 ? "green.300" : "white"}>
+                        <StatLabel>Planned ECTS</StatLabel>
+                        <StatNumber>{ectsPlannedSum}/240</StatNumber>
                     </Stat>
                     <Stat>
                         <StatLabel color={gpPlanned === 3 ? "green.300" : "white"}>Planned Γενικης Παιδειας</StatLabel>
@@ -666,9 +669,8 @@ export function Home({courses})
                             </Tr>
                         </Tbody>
                     </Table>
-                </Box>
-                </Stack>
-            </CardBody>
-        </Card>
+                </CardBody>
+            </Card>
+        </Flex>
     </Flex>)
 }

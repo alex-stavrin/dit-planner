@@ -1,5 +1,7 @@
 import { Flex, Card, CardBody, CardHeader, Heading, Stat, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
+import { useState } from "react";
 import { MyCoursesShower } from "../components/MyCoursesShower";
+import { SortSelect, compareCourses } from "../components/SortSelect";
 
 export default function PassedCourses(
     {
@@ -19,7 +21,8 @@ export default function PassedCourses(
         ectsSum += Number(passedCourses[i].ECTS); 
     }
 
-    const sortedPassed = [...passedCourses].sort((a, b) => Number(a.semester) - Number(b.semester));
+    const [sortBy, setSortBy] = useState("semester");
+    const sortedPassed = [...passedCourses].sort(compareCourses(sortBy));
 
 
     return <Flex flexDirection={"column"} overflow={"auto"} gap={5} mt={5} padding={3}>
@@ -54,6 +57,7 @@ export default function PassedCourses(
                 </Stat>
             </CardBody>
         </Card>}
+        {passedCourses.length > 0 && <SortSelect sortBy={sortBy} onChangeSortBy={setSortBy} showGrade={true}/>}
         <MyCoursesShower courses={sortedPassed} onRemove={removeHasCourse} onChangeGrade={changeGrade} onUpdateActivity={updateActivity}
                     stateFunction={passedCourseState} showActivity={false} showGrade={true} emptyComponent={noPassedComponent}/>
     </Flex>
