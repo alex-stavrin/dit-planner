@@ -12,6 +12,13 @@ import { Card, CardHeader, CardBody } from '@chakra-ui/react'
 import { Thead, Tr, Table, Td, Tbody} from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+const greenIf = (achieved) => achieved
+    ? { color: "green.300" }
+    : { color: "white" };
+
+const greenRowIf = (achieved) => achieved
+    ? { bg: "green.300", color: "gray.800", fontWeight: "semibold" }
+    : { bg: "transparent" };
 
 export function Home({courses})
 {
@@ -429,6 +436,21 @@ export function Home({courses})
             setCurrentGrade(0);
         }
     }
+
+    // the overview heading turns green when every stat goal is met
+    // and at least one semester is fully complete
+    const passedAllGreen = ectsPassedSum >= 240 && gpPassed >= 3 && ypPassed >= 18
+        && eymPassed >= 4 && projectPassed >= 1 && tpPassed >= 2
+        && ((s1YPassed >= 2 && s1BPassed >= 4) || (s2YPassed >= 2 && s2BPassed >= 4)
+            || (s3YPassed >= 2 && s3BPassed >= 4) || (s4YPassed >= 2 && s4BPassed >= 4)
+            || (s5YPassed >= 2 && s5BPassed >= 4) || (s6YPassed >= 2 && s6BPassed >= 4));
+
+    const plannedAllGreen = ectsPlannedSum >= 240 && gpPlanned === 3 && ypPlanned === 18
+        && eymPlanned >= 4 && projectPlanned >= 1 && tpPlanned >= 2
+        && ((s1YPlanned >= 2 && s1BPlanned >= 4) || (s2YPlanned >= 2 && s2BPlanned >= 4)
+            || (s3YPlanned >= 2 && s3BPlanned >= 4) || (s4YPlanned >= 2 && s4BPlanned >= 4)
+            || (s5YPlanned >= 2 && s5BPlanned >= 4) || (s6YPlanned >= 2 && s6BPlanned >= 4));
+
     return (
     <Flex align="center" justifyContent="center" flexDirection={"column"} overflow={"auto"}>
         <CircularProgress value={ectsPassedSum} color='blue.400'  size='330px' thickness='5px' min={0} max={240} mt={3} mb={3}>
@@ -445,30 +467,30 @@ export function Home({courses})
         <Flex w={["100%", "90%", "80%"]} mb={4} gap={4} direction={{ base: 'column', lg: 'row' }} align='stretch'>
             <Card flex='1'>
                 <CardHeader>
-                    <Heading size='lg'>Passed Overview</Heading>
+                    <Heading size='lg' {...greenIf(passedAllGreen)}>Passed Overview</Heading>
                 </CardHeader>
                 <CardBody>
-                    <Stat color={ectsPassedSum >= 240 ? "green.300" : "white"}>
+                    <Stat {...greenIf(ectsPassedSum >= 240)}>
                         <StatLabel>Passed ECTS</StatLabel>
                         <StatNumber>{ectsPassedSum}/240</StatNumber>
                     </Stat>
-                    <Stat color={gpPassed >= 3 ? "green.300" : "white"}>
+                    <Stat {...greenIf(gpPassed >= 3)}>
                         <StatLabel>Passed Γενικης Παιδειας</StatLabel>
                         <StatNumber>{gpPassed}/3</StatNumber>
                     </Stat>
-                    <Stat color={ypPassed >= 18 ? "green.300" : "white"}>
+                    <Stat {...greenIf(ypPassed >= 18)}>
                         <StatLabel>Passed Υποχρεωτικά</StatLabel>
                         <StatNumber>{ypPassed}/18</StatNumber>
                     </Stat>
-                    <Stat color={eymPassed >= 4 ? "green.300" : "white"}>
+                    <Stat {...greenIf(eymPassed >= 4)}>
                         <StatLabel>Passed Κατά Επιλογή Υποχρεωτικά</StatLabel>
                         <StatNumber>{eymPassed}/4</StatNumber>
                     </Stat>
-                    <Stat color={projectPassed >= 1 ? "green.300" : "white"}>
+                    <Stat {...greenIf(projectPassed >= 1)}>
                         <StatLabel>Passed Project</StatLabel>
                         <StatNumber>{projectPassed}/1</StatNumber>
                     </Stat>
-                    <Stat color={tpPassed >= 2 ? "green.300" : "white"}>
+                    <Stat {...greenIf(tpPassed >= 2)}>
                         <StatLabel>Passed Πτυχιακή/Πρακτική</StatLabel>
                         <StatNumber>{tpPassed}/2</StatNumber>
                     </Stat>
@@ -487,7 +509,7 @@ export function Home({courses})
                             </Tr>
                         </Thead>
                         <Tbody>
-                            <Tr bg={(s1YPassed >= 2 && s1BPassed >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s1YPassed >= 2 && s1BPassed >= 4)}>
                                 <Td>
                                     S1
                                 </Td>
@@ -498,7 +520,7 @@ export function Home({courses})
                                     {s1BPassed}/4
                                 </Td>
                             </Tr>
-                            <Tr bg={(s2YPassed >= 2 && s2BPassed >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s2YPassed >= 2 && s2BPassed >= 4)}>
                                 <Td>
                                     S2
                                 </Td>
@@ -509,7 +531,7 @@ export function Home({courses})
                                     {s2BPassed}/4
                                 </Td>
                             </Tr>
-                            <Tr bg={(s3YPassed >= 2 && s3BPassed >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s3YPassed >= 2 && s3BPassed >= 4)}>
                                 <Td>
                                     S3
                                 </Td>
@@ -520,7 +542,7 @@ export function Home({courses})
                                     {s3BPassed}/4
                                 </Td>
                             </Tr>
-                            <Tr bg={(s4YPassed >= 2 && s4BPassed >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s4YPassed >= 2 && s4BPassed >= 4)}>
                                 <Td>
                                     S4
                                 </Td>
@@ -531,7 +553,7 @@ export function Home({courses})
                                     {s4BPassed}/4
                                 </Td>
                             </Tr>
-                            <Tr bg={(s5YPassed >= 2 && s5BPassed >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s5YPassed >= 2 && s5BPassed >= 4)}>
                                 <Td>
                                     S5
                                 </Td>
@@ -542,7 +564,7 @@ export function Home({courses})
                                     {s5BPassed}/4
                                 </Td>
                             </Tr>
-                            <Tr bg={(s6YPassed >= 2 && s6BPassed >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s6YPassed >= 2 && s6BPassed >= 4)}>
                                 <Td>
                                     S6
                                 </Td>
@@ -559,32 +581,32 @@ export function Home({courses})
             </Card>
             <Card flex='1'>
                 <CardHeader>
-                    <Heading size='lg'>Planned Overview</Heading>
+                    <Heading size='lg' {...greenIf(plannedAllGreen)}>Planned Overview</Heading>
                 </CardHeader>
                 <CardBody>
-                    <Stat color={ectsPlannedSum >= 240 ? "green.300" : "white"}>
+                    <Stat {...greenIf(ectsPlannedSum >= 240)}>
                         <StatLabel>Planned ECTS</StatLabel>
                         <StatNumber>{ectsPlannedSum}/240</StatNumber>
                     </Stat>
-                    <Stat>
-                        <StatLabel color={gpPlanned === 3 ? "green.300" : "white"}>Planned Γενικης Παιδειας</StatLabel>
-                        <StatNumber color={gpPlanned === 3 ? "green.300" : "white"}>{gpPlanned}/3</StatNumber>
+                    <Stat {...greenIf(gpPlanned === 3)}>
+                        <StatLabel>Planned Γενικης Παιδειας</StatLabel>
+                        <StatNumber>{gpPlanned}/3</StatNumber>
                     </Stat>
-                    <Stat>
-                        <StatLabel color={ypPlanned === 18 ? "green.300" : "white"}>Planned Υποχρεωτικά</StatLabel>
-                        <StatNumber color={ypPlanned === 18 ? "green.300" : "white"}>{ypPlanned}/18</StatNumber>
+                    <Stat {...greenIf(ypPlanned === 18)}>
+                        <StatLabel>Planned Υποχρεωτικά</StatLabel>
+                        <StatNumber>{ypPlanned}/18</StatNumber>
                     </Stat>
-                    <Stat>
-                        <StatLabel color={eymPlanned >= 4 ? "green.300" : "white"}>Planned Κατα Επιλογή Υποχρεωτικά</StatLabel>
-                        <StatNumber color={eymPlanned >= 4 ? "green.300" : "white"}>{eymPlanned}/4</StatNumber>
+                    <Stat {...greenIf(eymPlanned >= 4)}>
+                        <StatLabel>Planned Κατα Επιλογή Υποχρεωτικά</StatLabel>
+                        <StatNumber>{eymPlanned}/4</StatNumber>
                     </Stat>
-                    <Stat>
-                        <StatLabel color={projectPlanned >=1 ? "green.300" : "white"}>Planned Project</StatLabel>
-                        <StatNumber color={projectPlanned >= 1 ? "green.300" : "white"}>{projectPlanned}/1</StatNumber>
+                    <Stat {...greenIf(projectPlanned >= 1)}>
+                        <StatLabel>Planned Project</StatLabel>
+                        <StatNumber>{projectPlanned}/1</StatNumber>
                     </Stat>
-                    <Stat>
-                        <StatLabel color={tpPlanned >=2 ? "green.300" : "white"}>Planned Πτυχιακή/Πρακτική</StatLabel>
-                        <StatNumber color={tpPlanned >= 2 ? "green.300" : "white"}>{tpPlanned}/2</StatNumber>
+                    <Stat {...greenIf(tpPlanned >= 2)}>
+                        <StatLabel>Planned Πτυχιακή/Πρακτική</StatLabel>
+                        <StatNumber>{tpPlanned}/2</StatNumber>
                     </Stat>                   
                     <Table>
                         <Thead>
@@ -601,7 +623,7 @@ export function Home({courses})
                             </Tr>
                         </Thead>
                         <Tbody>
-                            <Tr bg={(s1YPlanned >= 2 && s1BPlanned >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s1YPlanned >= 2 && s1BPlanned >= 4)}>
                                 <Td>
                                     S1
                                 </Td>
@@ -612,7 +634,7 @@ export function Home({courses})
                                     {s1BPlanned}/4
                                 </Td>
                             </Tr>
-                            <Tr bg={(s2YPlanned >= 2 && s2BPlanned >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s2YPlanned >= 2 && s2BPlanned >= 4)}>
                                 <Td>
                                     S2
                                 </Td>
@@ -623,7 +645,7 @@ export function Home({courses})
                                     {s2BPlanned}/4
                                 </Td>
                             </Tr>
-                            <Tr bg={(s3YPlanned >= 2 && s3BPlanned >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s3YPlanned >= 2 && s3BPlanned >= 4)}>
                                 <Td>
                                     S3
                                 </Td>
@@ -634,7 +656,7 @@ export function Home({courses})
                                     {s3BPlanned}/4
                                 </Td>
                             </Tr>
-                            <Tr  bg={(s4YPlanned >= 2 && s4BPlanned >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s4YPlanned >= 2 && s4BPlanned >= 4)}>
                                 <Td>
                                     S4
                                 </Td>
@@ -645,7 +667,7 @@ export function Home({courses})
                                     {s4BPlanned}/4
                                 </Td>
                             </Tr>
-                            <Tr  bg={(s5YPlanned >= 2 && s5BPlanned >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s5YPlanned >= 2 && s5BPlanned >= 4)}>
                                 <Td>
                                     S5
                                 </Td>
@@ -656,7 +678,7 @@ export function Home({courses})
                                     {s5BPlanned}/4
                                 </Td>
                             </Tr>
-                            <Tr  bg={(s6YPlanned >= 2 && s6BPlanned >= 4) ? "green.300" : "transparent"}>
+                            <Tr {...greenRowIf(s6YPlanned >= 2 && s6BPlanned >= 4)}>
                                 <Td>
                                     S6
                                 </Td>

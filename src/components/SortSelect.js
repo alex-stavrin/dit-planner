@@ -23,10 +23,10 @@ export function SortSelect({sortBy, onChangeSortBy, showGrade})
                 focusBorderColor={"blue.400"} borderRadius={"lg"} bg={"whiteAlpha.100"} cursor={"pointer"}
                 _hover={{bg: "whiteAlpha.200"}}>
                 <option value="semester">Semester</option>
-                <option value="ects_in">ECTS (lower first)</option>
                 <option value="ects_de">ECTS (higher first)</option>
-                {showGrade && <option value="grade_in">Grade (lower first)</option>}
+                <option value="ects_in">ECTS (lower first)</option>
                 {showGrade && <option value="grade_de">Grade (higher first)</option>}
+                {showGrade && <option value="grade_in">Grade (lower first)</option>}
             </Select>
         </FormControl>
     );

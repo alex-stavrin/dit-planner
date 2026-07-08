@@ -7,21 +7,30 @@ import {
     Button,
     Link,
     Text,
-    UnorderedList,
-    ListItem,
+    Badge,
     Input,
+    Wrap,
+    WrapItem,
+    AlertDialog,
+    AlertDialogOverlay,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogBody,
+    AlertDialogFooter,
+    useDisclosure,
 } from '@chakra-ui/react'
 import { Card, CardHeader, CardBody } from '@chakra-ui/react'
+import { useRef } from 'react'
 
 
-export function Settings({ onResetData, onSyncData, onImportData, onExportData, version }) {
+export function Settings({ onResetData, onImportData, onExportData, onExportPassed, onExportPlanned, version }) {
 
-    const resetButtonClicked = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = useRef();
+
+    const confirmResetClicked = () => {
+        onClose();
         onResetData();
-    }
-
-    const syncButtonClicked = () => {
-        onSyncData();
     }
 
     const importButtonClicked = (event) => {
@@ -32,22 +41,22 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
         // reset so picking the same file again still fires onChange
         event.target.value = "";
       };
-    
+
       const exportButtonClicked = () => {
         onExportData();
       };
 
-    return (<Flex align="center" flexDirection={"column"} w="100%" h="100%" mt={5}>
-        <Box w={['100%', '75%', '35%']}>
+    return (<Flex align="center" flexDirection={"column"} w="100%" h="100%" mt={5} mb={10}>
+        <Box w={['95%', '75%', '45%']}>
             <Card w={"100%"}>
-                <CardHeader>
-                    <Heading size='md'>Settings</Heading>
+                <CardHeader pb={0}>
+                    <Flex align="center" justify="space-between">
+                        <Heading size='md'>Settings</Heading>
+                        <Badge colorScheme='blue' borderRadius='md' px={2}>v{version}</Badge>
+                    </Flex>
                 </CardHeader>
                 <CardBody>
-                    <Stack divider={<StackDivider />} spacing='4'>
-                        <Box>
-                            <Button colorScheme='yellow' onClick={syncButtonClicked}>Sync Data</Button>
-                        </Box>
+                    <Stack divider={<StackDivider />} spacing='5'>
                         <Box>
                             <Input
                                 type="file"
@@ -56,46 +65,87 @@ export function Settings({ onResetData, onSyncData, onImportData, onExportData, 
                                 display="none"
                                 id="importInput"
                             />
-                            <Button
-                                colorScheme="blue"
-                                onClick={() => document.getElementById("importInput").click()}
-                            >
-                                Import from file
-                            </Button>
-                            &nbsp;
-                            <Button colorScheme="blue" onClick={exportButtonClicked}>
-                                Export to file
-                            </Button>
-                        </Box>
-                        <Box>
-                            <Button colorScheme='red' onClick={resetButtonClicked}>Reset Data</Button>
-                        </Box>
-                        <Box>
-                            Made by <Link href='https://www.alexstavrin.com/' color={"blue.500"} isExternal>Alex Stavrin</Link>
-                        </Box>
-                        <Box>
-                            <Text fontSize="xl" fontWeight="bold">
-                                Contributors
+                            <Heading size='sm' mb={1}>Backup</Heading>
+                            <Text fontSize='sm' color='gray.400' mb={3}>
+                                Save all your data to a raw file, or restore it from one.
+                                Only raw files can be imported.
                             </Text>
-                            <UnorderedList>
-                                <ListItem>
-                                    <Link href='https://github.com/matinanadali' isExternal color={"blue.500"}>
-                                        matinanadali
-                                    </Link>
-                                </ListItem>
-                                <ListItem>
-                                    DanielPikilidis
-                                </ListItem>
-                                <ListItem>
-                                    vaghred
-                                </ListItem>
-                            </UnorderedList>
-                            <Text mt={5}>
-                                Contribute in <Link href='https://github.com/alex-stavrin/dit-planner' color={"blue.500"} isExternal>Github</Link>
-                            </Text>
+                            <Wrap spacing={2}>
+                                <WrapItem>
+                                    <Button
+                                        colorScheme="blue"
+                                        onClick={() => document.getElementById("importInput").click()}
+                                    >
+                                        Import raw
+                                    </Button>
+                                </WrapItem>
+                                <WrapItem>
+                                    <Button colorScheme="blue" onClick={exportButtonClicked}>
+                                        Export raw
+                                    </Button>
+                                </WrapItem>
+                            </Wrap>
                         </Box>
                         <Box>
-                            Version: {version}
+                            <Heading size='sm' mb={1}>Course exports</Heading>
+                            <Text fontSize='sm' color='gray.400' mb={3}>
+                                Export only a part of your courses to share them.
+                                These files cannot be imported back.
+                            </Text>
+                            <Wrap spacing={2}>
+                                <WrapItem>
+                                    <Button colorScheme="teal" onClick={onExportPassed}>
+                                        Export passed courses
+                                    </Button>
+                                </WrapItem>
+                                <WrapItem>
+                                    <Button colorScheme="teal" onClick={onExportPlanned}>
+                                        Export planned courses
+                                    </Button>
+                                </WrapItem>
+                            </Wrap>
+                        </Box>
+                        <Box>
+                            <Heading size='sm' mb={1} color='red.300'>Danger zone</Heading>
+                            <Text fontSize='sm' color='gray.400' mb={3}>
+                                Delete all your courses, grades and progress and start fresh.
+                                This cannot be undone.
+                            </Text>
+                            <Button colorScheme='red' onClick={onOpen}>Reset Data</Button>
+                            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                                <AlertDialogOverlay>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                                            Reset Data
+                                        </AlertDialogHeader>
+                                        <AlertDialogBody>
+                                            Are you sure? All your courses, grades and progress will be deleted. This cannot be undone.
+                                        </AlertDialogBody>
+                                        <AlertDialogFooter>
+                                            <Button ref={cancelRef} onClick={onClose}>
+                                                Cancel
+                                            </Button>
+                                            <Button colorScheme='red' onClick={confirmResetClicked} ml={3}>
+                                                Reset Data
+                                            </Button>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialogOverlay>
+                            </AlertDialog>
+                        </Box>
+                        <Box>
+                            <Heading size='sm' mb={1}>About</Heading>
+                            <Text fontSize='sm' color='gray.400'>
+                                Made by <Link href='https://www.alexstavrin.com/' color={"blue.400"} isExternal>Alex Stavrin</Link>
+                            </Text>
+                            <Text fontSize='sm' color='gray.400' mt={1}>
+                                Contributors:{' '}
+                                <Link href='https://github.com/matinanadali' isExternal color={"blue.400"}>matinanadali</Link>
+                                {', '}DanielPikilidis{', '}vaghred
+                            </Text>
+                            <Text fontSize='sm' color='gray.400' mt={1}>
+                                Contribute in <Link href='https://github.com/alex-stavrin/dit-planner' color={"blue.400"} isExternal>Github</Link>
+                            </Text>
                         </Box>
                     </Stack>
                 </CardBody>

@@ -56,7 +56,7 @@ export function MyCourse({course, onRemove, onChangeGrade, showActivity, onUpdat
     }
 
     let gradeColor = "yellow.300";
-    if(grade > 7)
+    if(grade >= 8)
     {
         gradeColor = "green.300";
     }

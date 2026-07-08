@@ -93,6 +93,33 @@ const mergeSavedCourseState = (course, savedCourse) => {
   return mergedCourse;
 };
 
+// merge a user's saved course state (grades, passed/planned, custom MC courses)
+// into a fresh copy of the latest bundled course catalog
+const mergeIntoCourseData = (savedList) => {
+  const savedCourses = normalizeCourses(savedList);
+  // deep copy so we never mutate the imported coursesData module
+  let newCourses = normalizeCourses(coursesData.map(course => ({ ...course })));
+  const newCourseIndex = buildUniqueCourseIndex(newCourses);
+  savedCourses.forEach((itemOld) => {
+    const targetIndex = courseSyncKeys(itemOld)
+      .map((key) => newCourseIndex.get(key))
+      .find((index) => index !== undefined && index !== null);
+
+    if(targetIndex !== undefined)
+    {
+      newCourses[targetIndex] = mergeSavedCourseState(newCourses[targetIndex], itemOld);
+    }
+  })
+  // add our own user courses
+  savedCourses.forEach(course => {
+    if(course.category === "MC")
+    {
+      newCourses.push(course);
+    }
+  });
+  return normalizeCourses(newCourses);
+};
+
 function App() {
   const [courses, setCourses] = useState([]);
   const toast = useToast();
@@ -170,17 +197,26 @@ function App() {
     showToast("Course created", newCourse.name + " added to planned courses", "success");
   }
 
-  const exportToFile = (data, fileName = "coursesData.json") => {
+  const exportToFile = (data, type = "raw") => {
     // Get the current date
     const currentDate = new Date();
 
     // Format the date as YYYY-MM-DD
     const formattedDate = currentDate.toISOString().split("T")[0];
 
-    // Append the date to the filename (useful if you have multiple saves)
-    const fileNameWithDate = `coursesData_${formattedDate}.json`;
+    const fileNamePrefixes = {
+      raw: "coursesData",
+      passed: "passedCourses",
+      planned: "plannedCourses",
+    };
 
-    const fileToSave = new Blob([JSON.stringify(data, null, 2)], {
+    // Append the date to the filename (useful if you have multiple saves)
+    const fileNameWithDate = `${fileNamePrefixes[type]}_${formattedDate}.json`;
+
+    // Wrap in an envelope with a type so imports can recognise the file
+    const exportData = { type, courses: data };
+
+    const fileToSave = new Blob([JSON.stringify(exportData, null, 2)], {
       type: "application/json",
     });
 
@@ -201,7 +237,32 @@ function App() {
         );
         return;
       }
-      if(!Array.isArray(importedData) || importedData.some(course => typeof course !== "object" || course === null || typeof course.code !== "string"))
+      // New exports are wrapped in an envelope { type, courses }.
+      // Old exports were a plain array, which was always the raw data.
+      let importedCourses = importedData;
+      if(importedData && !Array.isArray(importedData) && typeof importedData === "object")
+      {
+        if(importedData.type === "passed" || importedData.type === "planned")
+        {
+          showToast(
+            "Import Failed",
+            `This file is a "${importedData.type}" courses export. Only raw exports can be imported.`,
+            "error",
+          );
+          return;
+        }
+        if(importedData.type !== "raw")
+        {
+          showToast(
+            "Import Failed",
+            "The selected file is not a valid courses export.",
+            "error",
+          );
+          return;
+        }
+        importedCourses = importedData.courses;
+      }
+      if(!Array.isArray(importedCourses) || importedCourses.some(course => typeof course !== "object" || course === null || typeof course.code !== "string"))
       {
         showToast(
           "Import Failed",
@@ -210,7 +271,9 @@ function App() {
         );
         return;
       }
-      setCourses(normalizeCourses(importedData));
+      // merge into the current catalog so files exported from an
+      // older version of the app still end up with up-to-date course data
+      setCourses(mergeIntoCourseData(importedCourses));
       showToast(
         "Data Imported",
         "Your courses data has been successfully imported.",
@@ -326,36 +389,14 @@ function App() {
     const parsedSavedCourses = parseSavedCourses(notParsedCourses);
     if(parsedSavedCourses)
     {
-      const savedCourses = normalizeCourses(parsedSavedCourses);
-      // deep copy so we never mutate the imported coursesData module
-      let newCourses = normalizeCourses(coursesData.map(course => ({ ...course })));
-      const newCourseIndex = buildUniqueCourseIndex(newCourses);
-      savedCourses.forEach((itemOld) => {
-        const targetIndex = courseSyncKeys(itemOld)
-          .map((key) => newCourseIndex.get(key))
-          .find((index) => index !== undefined && index !== null);
-
-        if(targetIndex !== undefined)
-        {
-          newCourses[targetIndex] = mergeSavedCourseState(newCourses[targetIndex], itemOld);
-        }
-      })
-      // add our own user courses
-      savedCourses.forEach(course => {
-        if(course.category === "MC")
-        {
-          newCourses.push(course);
-        }
-      });
-
-      setCourses(normalizeCourses(newCourses));
+      setCourses(mergeIntoCourseData(parsedSavedCourses));
       showToast("Synced Data", "Changes were made in the course data. Your data is synced. Look for any errors though", "success");
     }
     else
     {
       setCourses(normalizeCourses(coursesData));
       showToast("No saved data", "Loaded the latest course data instead.", "info");
-    }  
+    }
   }
 
   const noCurrentComponent = () => {
@@ -415,7 +456,10 @@ function App() {
 
           <Route path="/dit-planner/make" element={<MakeCourse onMakeCourse={makeCourse}/>} />
 
-          <Route path="/dit-planner/settings" element={<Settings onResetData={resetData} onSyncData={syncSavedWithCourseData} onExportData={() => exportToFile(courses)} onImportData={importFromFile} version={coursesDataVersion} />} />
+          <Route path="/dit-planner/settings" element={<Settings onResetData={resetData} onExportData={() => exportToFile(courses, "raw")}
+            onExportPassed={() => exportToFile(courses.filter(passedCourseState), "passed")}
+            onExportPlanned={() => exportToFile(courses.filter(course => plannedCourseState(course) || passedCourseState(course) || currentCourseState(course)), "planned")}
+            onImportData={importFromFile} version={coursesDataVersion} />} />
         </Routes>
         </Box>     
     </Flex>

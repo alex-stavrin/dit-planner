@@ -31,7 +31,7 @@ export const MakeCourse = ({onMakeCourse}) => {
   return (
     <Flex align="center" gap={5} flexDirection={"column"} w="100%" h="100%" mt={5}>
       <Heading>Make a Course</Heading>
-      <Card w={['100%', '75%', '35%']} p={3}>
+      <Card w={['95%', '75%', '35%']} p={[6, 8]}>
         <Formik
           initialValues={{
             courseName: "",
@@ -56,7 +56,7 @@ export const MakeCourse = ({onMakeCourse}) => {
                 <FormErrorMessage>{errors.courseName}</FormErrorMessage>
               </FormControl>
   
-              <FormControl mt={4} isInvalid={errors.ects && touched.ects}>
+              <FormControl mt={6} isInvalid={errors.ects && touched.ects}>
                 <FormLabel htmlFor="ects">ECTS</FormLabel>
                 <NumberInput
                   min={1}
@@ -68,7 +68,7 @@ export const MakeCourse = ({onMakeCourse}) => {
                 <FormErrorMessage>{errors.ects}</FormErrorMessage>
               </FormControl>
   
-              <Button mt={4} colorScheme="blue" type="submit">
+              <Button mt={8} colorScheme="blue" type="submit">
                 Make
               </Button>
             </Form>
